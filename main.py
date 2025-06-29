@@ -1,9 +1,19 @@
 from fastapi import FastAPI, Query
 import joblib
+from fastapi.middleware.cors import CORSMiddleware
+
 from datetime import datetime
 import pandas as pd
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 VARIABLES_INFO = {
     "precipitacion": {
@@ -28,7 +38,7 @@ VARIABLES_INFO = {
 def root():
     return {"message": "Backend de predicciones de Mindo"}
 
-@app.get("/api/predicciones/")
+@app.get("/api/predicciones")
 def predecir(variable: str = Query(...), meses: int = Query(...)):
     if variable not in VARIABLES_INFO:
         return {"error": f"Variable no soportada. Usa una de: {list(VARIABLES_INFO.keys())}"}
@@ -57,7 +67,7 @@ def predecir(variable: str = Query(...), meses: int = Query(...)):
         # Calculamos confianza aproximada (entre 0 y 100%)
         confianza = max(0, min(100, 100 - desviacion))
 
-        fecha = pd.date_range(start=fecha_base, periods=meses, freq='M')[i].strftime("%Y-%m")
+        fecha = pd.date_range(start=fecha_base, periods=meses, freq='ME')[i].strftime("%Y-%m")
 
         predicciones.append({
             "mes": fecha,

@@ -5,7 +5,18 @@ from utils import preparar_datos_para_prediccion
 
 def entrenar_y_guardar_modelo(nombre_variable, archivo_csv, output_modelo):
     df = pd.read_csv(archivo_csv)
-    data = preparar_datos_para_prediccion(df)
+    
+    # Mapear variable a la columna correspondiente
+    columnas_valor = {
+        "precipitacion": "valor",
+        "temperatura": "temperatura_alta",  # o 'temperatura_baja', según lo que quieras predecir
+        "viento": "valor",
+        "direccion": "valor"
+    }
+    
+    columna_valor = columnas_valor.get(nombre_variable, "valor")
+    
+    data = preparar_datos_para_prediccion(df, columna_valor=columna_valor)
 
     X = data[['valor']]
     y = data['target']

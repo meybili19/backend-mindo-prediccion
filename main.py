@@ -51,7 +51,6 @@ def predecir(variable: str = Query(...), meses: int = Query(...)):
     except FileNotFoundError:
         return {"error": f"No se encontró el modelo para {variable}"}
 
-    # Valor inicial simulado
     ultimo_valor = 100.0
 
     predicciones = []
@@ -73,7 +72,7 @@ def predecir(variable: str = Query(...), meses: int = Query(...)):
             "mes": fecha,
             "valor": round(valor_predicho, 2),
             "unidad": unidad,
-            "confianza": round(confianza, 1)  # porcentaje estimado
+            "confianza": round(confianza, 1) 
         })
 
         ultimo_valor = valor_predicho
